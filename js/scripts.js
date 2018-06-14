@@ -2,6 +2,14 @@
 var turn = 0;
 var gameOver = false;
 var spaceArray = [["","",""],["","",""],["","",""]];
+var arrayCoordinates = [ ["00","01","02"],
+                         ["10","11","12"],
+                         ["20","21","22"],
+                         ["00","10","20"],
+                         ["01","11","21"],
+                         ["02","12","22"],
+                         ["00","11","22"],
+                         ["02","11","20"] ];
 console.log(spaceArray);
 console.log(turn);
 
@@ -43,14 +51,22 @@ function twoInRow (arrayBoard) {
   for (i = 0; i < arrayBoard.length; i++){
     newString = arrayBoard[i].join("");
     if (newString.includes(toSymbol(turn) + toSymbol(turn))){
-      alert("2 in a row");
       if (newString.includes(toSymbol(turn + 1))){
-        alert("but it's blocked");
+        computerXIndex = i;
       }
     }
   }
 }
-function twoInVertical (arrayBoard) {
+function findYIndex (cXIndex, allRowsArray) {
+  computerYIndex = allRowsArray[cXIndex].indexOf("");
+}
+function getCoordinates (indexX,indexY) {
+  var separateCoordinates = arrayCoordinates[indexX][indexY].split("");
+  computerX = separateCoordinates[0];
+  computerY = separateCoordinates[1];
+}
+function twoCheck (arrayBoard) {
+  //Vertical Rows
   var arrayOfVertical = [];
   for (b = 0; b < arrayBoard.length; b ++) {
     for (a = 0; a < arrayBoard[b].length; a ++) {
@@ -61,8 +77,23 @@ function twoInVertical (arrayBoard) {
   for (c = 0; c < arrayBoard.length; c++) {
     verticalToRows.push(arrayOfVertical.slice(c * arrayBoard.length, (c + 1) *  arrayBoard.length));
   }
-  console.log(verticalToRows);
-  twoInRow(verticalToRows);
+  //Diagonal Rows
+  var diagonalArray = [[],[]]
+  for (i = 0; i < 3; i++) {
+    diagonalArray[0].push(arrayBoard[i][i]);
+  }
+  for (j = 0; j < 3; j++) {
+    diagonalArray[1].push(arrayBoard[j][2-j]);
+  }
+  //One array for all 2 in a rows
+  var allRows = arrayBoard.concat(verticalToRows).concat(diagonalArray);
+  console.log(allRows);
+  var computerXIndex = 0;
+  var computerYIndex = 0;
+  twoInRow(allRows);
+  findYIndex(computerXIndex, allRows);
+  getCoordinates (computerXIndex, computerYIndex);
+  alert("play at" + computerX + ", " + computerY);
 }
 
 function turnSequence (arrayBoard, xCoordinate, yCoordinate) {
@@ -151,23 +182,24 @@ $(document).ready(function(){
   });
   var newGame = new Game (gameOver);
   var newBoard = new Board (spaceArray);
+  var computerX = 0;
+  var computerY = 0;
 
   $("#0-0").click(function(){
     var xIndex = 0;
     var yIndex = 0;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
-    twoInRow(newBoard.arrayBoard);
-    twoInVertical(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
+    twoCheck(newBoard.arrayBoard);
+
   });
   $("#0-1").click(function(){
     var xIndex = 0;
     var yIndex = 1;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
-    twoInRow(newBoard.arrayBoard);
-    twoInVertical(newBoard.arrayBoard);
+    twoCheck(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
   });
   $("#0-2").click(function(){
@@ -175,8 +207,7 @@ $(document).ready(function(){
     var yIndex = 2;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
-    twoInRow(newBoard.arrayBoard);
-    twoInVertical(newBoard.arrayBoard);
+    twoCheck(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
   });
   $("#1-0").click(function(){
@@ -184,8 +215,7 @@ $(document).ready(function(){
     var yIndex = 0;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
-    twoInRow(newBoard.arrayBoard);
-    twoInVertical(newBoard.arrayBoard);
+    twoCheck(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
   });
   $("#1-1").click(function(){
@@ -193,8 +223,7 @@ $(document).ready(function(){
     var yIndex = 1;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
-    twoInRow(newBoard.arrayBoard);
-    twoInVertical(newBoard.arrayBoard);
+    twoCheck(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
   });
   $("#1-2").click(function(){
@@ -202,8 +231,7 @@ $(document).ready(function(){
     var yIndex = 2;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
-    twoInRow(newBoard.arrayBoard);
-    twoInVertical(newBoard.arrayBoard);
+    twoCheck(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
   });
   $("#2-0").click(function(){
@@ -211,8 +239,7 @@ $(document).ready(function(){
     var yIndex = 0;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
-    twoInRow(newBoard.arrayBoard);
-    twoInVertical(newBoard.arrayBoard);
+    twoCheck(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
   });
   $("#2-1").click(function(){
@@ -220,8 +247,7 @@ $(document).ready(function(){
     var yIndex = 1;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
-    twoInRow(newBoard.arrayBoard);
-    twoInVertical(newBoard.arrayBoard);
+    twoCheck(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
   });
   $("#2-2").click(function(){
@@ -229,30 +255,7 @@ $(document).ready(function(){
     var yIndex = 2;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
-    twoInRow(newBoard.arrayBoard);
-    twoInVertical(newBoard.arrayBoard);
+    twoCheck(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
   });
-
 });
-
-//Vertical
-
-
-
-
-
-
-
-
-//   var cell0 = $("#00").val();
-//   var cell1 = $("#01").val();
-//   var cell2 = $("#02").val();
-//   var cell3 = $("#10").val();
-//   var cell4 = $("#11").val();
-//   var cell5 = $("#12").val();
-//   var cell6 = $("#20").val();
-//   var cell7 = $("#21").val();
-//   var cell8 = $("#22").val();
-//   var cells = [cell0, cell1, cell2, cell3, cell4, cell5, cell5, cell6, cell7, cell8]
-// });
