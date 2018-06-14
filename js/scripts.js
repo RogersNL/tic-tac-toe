@@ -10,6 +10,8 @@ var arrayCoordinates = [ ["00","01","02"],
                          ["02","12","22"],
                          ["00","11","22"],
                          ["02","11","20"] ];
+var computerXIndex = -1;
+var computerYIndex = -1;
 console.log(spaceArray);
 console.log(turn);
 
@@ -51,8 +53,11 @@ function twoInRow (arrayBoard) {
   for (i = 0; i < arrayBoard.length; i++){
     newString = arrayBoard[i].join("");
     if (newString.includes(toSymbol(turn) + toSymbol(turn))){
-      if (newString.includes(toSymbol(turn + 1))){
+      alert("2 in a row");
+      if (!newString.includes(toSymbol(turn + 1))){
+        alert("not blocked");
         computerXIndex = i;
+        alert(computerXIndex);
       }
     }
   }
@@ -64,6 +69,8 @@ function getCoordinates (indexX,indexY) {
   var separateCoordinates = arrayCoordinates[indexX][indexY].split("");
   computerX = separateCoordinates[0];
   computerY = separateCoordinates[1];
+  computerXIndex = -1;
+  computerYIndex = -1;
 }
 function twoCheck (arrayBoard) {
   //Vertical Rows
@@ -88,12 +95,14 @@ function twoCheck (arrayBoard) {
   //One array for all 2 in a rows
   var allRows = arrayBoard.concat(verticalToRows).concat(diagonalArray);
   console.log(allRows);
-  var computerXIndex = 0;
-  var computerYIndex = 0;
   twoInRow(allRows);
-  findYIndex(computerXIndex, allRows);
-  getCoordinates (computerXIndex, computerYIndex);
-  alert("play at" + computerX + ", " + computerY);
+
+  if (computerXIndex >= 0){
+    findYIndex(computerXIndex, allRows);
+    getCoordinates (computerXIndex, computerYIndex);
+    alert("play at " + computerX + ", " + computerY);
+  }
+
 }
 
 function turnSequence (arrayBoard, xCoordinate, yCoordinate) {
@@ -185,9 +194,11 @@ $(document).ready(function(){
   var computerX = 0;
   var computerY = 0;
 
+
   $("#0-0").click(function(){
     var xIndex = 0;
     var yIndex = 0;
+
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
     winCheck(newBoard.arrayBoard);
@@ -199,63 +210,63 @@ $(document).ready(function(){
     var yIndex = 1;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
-    twoCheck(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
+    twoCheck(newBoard.arrayBoard);
   });
   $("#0-2").click(function(){
     var xIndex = 0;
     var yIndex = 2;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
-    twoCheck(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
+    twoCheck(newBoard.arrayBoard);
   });
   $("#1-0").click(function(){
     var xIndex = 1;
     var yIndex = 0;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
-    twoCheck(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
+    twoCheck(newBoard.arrayBoard);
   });
   $("#1-1").click(function(){
     var xIndex = 1;
     var yIndex = 1;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
-    twoCheck(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
+    twoCheck(newBoard.arrayBoard);
   });
   $("#1-2").click(function(){
     var xIndex = 1;
     var yIndex = 2;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
-    twoCheck(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
+    twoCheck(newBoard.arrayBoard);
   });
   $("#2-0").click(function(){
     var xIndex = 2;
     var yIndex = 0;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
-    twoCheck(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
+    twoCheck(newBoard.arrayBoard);
   });
   $("#2-1").click(function(){
     var xIndex = 2;
     var yIndex = 1;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
-    twoCheck(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
+    twoCheck(newBoard.arrayBoard);
   });
   $("#2-2").click(function(){
     var xIndex = 2;
     var yIndex = 2;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
-    twoCheck(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
+    twoCheck(newBoard.arrayBoard);
   });
 });
