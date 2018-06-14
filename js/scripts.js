@@ -23,13 +23,54 @@ function Board (arrayBoard) {
   this.arrayBoard = arrayBoard;
 }
 
+
 //Functions
+function toSymbol (turn) {
+  if(turn%2 === 0){
+    return "O";
+  } else {
+    return "X";
+  }
+}
+function winMessage (){
+  if(turn%2 === 0){
+    $("#Player2-result").show();
+  } else {
+    $("#Player1-result").show();
+  }
+}
+function twoInRow (arrayBoard) {
+  for (i = 0; i < arrayBoard.length; i++){
+    newString = arrayBoard[i].join("");
+    if (newString.includes(toSymbol(turn) + toSymbol(turn))){
+      alert("2 in a row");
+      if (newString.includes(toSymbol(turn + 1))){
+        alert("but it's blocked");
+      }
+    }
+  }
+}
+function twoInVertical (arrayBoard) {
+  var arrayOfVertical = [];
+  for (b = 0; b < arrayBoard.length; b ++) {
+    for (a = 0; a < arrayBoard[b].length; a ++) {
+      arrayOfVertical.push(arrayBoard[a][b]);
+    }
+  }
+  var verticalToRows = []
+  for (c = 0; c < arrayBoard.length; c++) {
+    verticalToRows.push(arrayOfVertical.slice(c * arrayBoard.length, (c + 1) *  arrayBoard.length));
+  }
+  console.log(verticalToRows);
+  twoInRow(verticalToRows);
+}
+
 function turnSequence (arrayBoard, xCoordinate, yCoordinate) {
   if (arrayBoard[xCoordinate][yCoordinate] === "" && !gameOver) {
     if (turn%2 === 0) {
       arrayBoard[xCoordinate].splice(yCoordinate, 1, "X");
       $("#"+ xCoordinate +"-"+ yCoordinate).append("<img src='img/X.png' alt='x'>");
-      turn ++;
+      turn++;
       $("#player2").show();
       $("#player1").hide();
       console.log(arrayBoard);
@@ -45,75 +86,45 @@ function turnSequence (arrayBoard, xCoordinate, yCoordinate) {
     }
   }
 }
-function winCheck (arrayBoard) {
+function winCheck (arrayBoard, boolean) {
   //Horizontal
-  if(arrayBoard[0][0] === "X" && arrayBoard[0][1] === "X" && arrayBoard[0][2] === "X"){
-    $("#Player1-result").show();
+  if(arrayBoard[0][0] === toSymbol(turn) && arrayBoard[0][1] === toSymbol(turn) && arrayBoard[0][2] === toSymbol(turn)){
+    winMessage();
     gameOver = true;
   }
-  if(arrayBoard[1][0] === "X" && arrayBoard[1][1] === "X" && arrayBoard[1][2] === "X"){
-    $("#Player1-result").show();
+  if(arrayBoard[1][0] === toSymbol(turn) && arrayBoard[1][1] === toSymbol(turn) && arrayBoard[1][2] === toSymbol(turn)){
+    winMessage();
     gameOver = true;
   }
-  if(arrayBoard[2][0] === "X" && arrayBoard[2][1] === "X" && arrayBoard[2][2] === "X"){
-    $("#Player1-result").show();
-    gameOver = true;
-  }
-  if(arrayBoard[0][0] === "O" && arrayBoard[0][1] === "O" && arrayBoard[0][2] === "O"){
-    $("#Player2-result").show();
-    gameOver = true;
-  }
-  if(arrayBoard[1][0] === "O" && arrayBoard[1][1] === "O" && arrayBoard[1][2] === "O"){
-    $("#Player2-result").show();
-    gameOver = true;
-  }
-  if(arrayBoard[2][0] === "O" && arrayBoard[2][1] === "O" && arrayBoard[2][2] === "O"){
-    $("#Player2-result").show();
+  if(arrayBoard[2][0] === toSymbol(turn) && arrayBoard[2][1] === toSymbol(turn) && arrayBoard[2][2] === toSymbol(turn)){
+    winMessage();
     gameOver = true;
   }
 
   //Vertical
-  if(arrayBoard[0][0] === "X" && arrayBoard[1][0] === "X" && arrayBoard[2][0] === "X"){
-    $("#Player1-result").show();
+  if(arrayBoard[0][0] === toSymbol(turn) && arrayBoard[1][0] === toSymbol(turn) && arrayBoard[2][0] === toSymbol(turn)){
+    winMessage();
     gameOver = true;
   }
-  if(arrayBoard[0][1] === "X" && arrayBoard[1][1] === "X" && arrayBoard[2][1] === "X"){
-    $("#Player1-result").show();
+  if(arrayBoard[0][1] === toSymbol(turn) && arrayBoard[1][1] === toSymbol(turn) && arrayBoard[2][1] === toSymbol(turn)){
+    winMessage();
     gameOver = true;
   }
-  if(arrayBoard[0][2] === "X" && arrayBoard[1][2] === "X" && arrayBoard[2][2] === "X"){
-    $("#Player1-result").show();
+  if(arrayBoard[0][2] === toSymbol(turn) && arrayBoard[1][2] === toSymbol(turn) && arrayBoard[2][2] === toSymbol(turn)){
+    winMessage();
     gameOver = true;
   }
-  if(arrayBoard[0][0] === "O" && arrayBoard[1][0] === "O" && arrayBoard[2][0] === "O"){
-    $("#Player2-result").show();
-    gameOver = true;
-  }
-  if(arrayBoard[0][1] === "O" && arrayBoard[1][1] === "O" && arrayBoard[2][1] === "O"){
-    $("#Player2-result").show();
-    gameOver = true;
-  }
-  if(arrayBoard[0][2] === "O" && arrayBoard[1][2] === "O" && arrayBoard[2][2] === "O"){
-    $("#Player2-result").show();
-    gameOver = true;
-  }
+
   //Diagonal
-  if(arrayBoard[0][0] === "X" && arrayBoard[1][1] === "X" && arrayBoard[2][2] === "X"){
-    $("#Player1-result").show();
+  if(arrayBoard[0][0] === toSymbol(turn) && arrayBoard[1][1] === toSymbol(turn) && arrayBoard[2][2] === toSymbol(turn)){
+    winMessage();
     gameOver = true;
   }
-  if(arrayBoard[0][2] === "X" && arrayBoard[1][1] === "X" && arrayBoard[2][0] === "X"){
-    $("#Player1-result").show();
+  if(arrayBoard[0][2] === toSymbol(turn) && arrayBoard[1][1] === toSymbol(turn) && arrayBoard[2][0] === toSymbol(turn)){
+    winMessage();
     gameOver = true;
   }
-  if(arrayBoard[0][0] === "O" && arrayBoard[1][1] === "O" && arrayBoard[2][2] === "O"){
-    $("#Player2-result").show();
-    gameOver = true;
-  }
-  if(arrayBoard[0][2] === "O" && arrayBoard[1][1] === "O" && arrayBoard[2][0] === "O"){
-    $("#Player2-result").show();
-    gameOver = true;
-  }
+
 
   //Draw
   if(arrayBoard[0][0] !== "" && arrayBoard[0][1] !== "" && arrayBoard[0][2] !== "" &&  arrayBoard[1][0] !== "" && arrayBoard[1][1] !== "" && arrayBoard[1][2] !== "" && arrayBoard[2][0] !== "" && arrayBoard[2][1] !== "" && arrayBoard[2][2] !== "" && !gameOver){
@@ -146,6 +157,8 @@ $(document).ready(function(){
     var yIndex = 0;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
+    twoInRow(newBoard.arrayBoard);
+    twoInVertical(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
   });
   $("#0-1").click(function(){
@@ -153,6 +166,8 @@ $(document).ready(function(){
     var yIndex = 1;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
+    twoInRow(newBoard.arrayBoard);
+    twoInVertical(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
   });
   $("#0-2").click(function(){
@@ -160,6 +175,8 @@ $(document).ready(function(){
     var yIndex = 2;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
+    twoInRow(newBoard.arrayBoard);
+    twoInVertical(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
   });
   $("#1-0").click(function(){
@@ -167,6 +184,8 @@ $(document).ready(function(){
     var yIndex = 0;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
+    twoInRow(newBoard.arrayBoard);
+    twoInVertical(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
   });
   $("#1-1").click(function(){
@@ -174,12 +193,17 @@ $(document).ready(function(){
     var yIndex = 1;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
+    twoInRow(newBoard.arrayBoard);
+    twoInVertical(newBoard.arrayBoard);
+    winCheck(newBoard.arrayBoard);
   });
   $("#1-2").click(function(){
     var xIndex = 1;
     var yIndex = 2;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
+    twoInRow(newBoard.arrayBoard);
+    twoInVertical(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
   });
   $("#2-0").click(function(){
@@ -187,6 +211,8 @@ $(document).ready(function(){
     var yIndex = 0;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
+    twoInRow(newBoard.arrayBoard);
+    twoInVertical(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
   });
   $("#2-1").click(function(){
@@ -194,6 +220,8 @@ $(document).ready(function(){
     var yIndex = 1;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
+    twoInRow(newBoard.arrayBoard);
+    twoInVertical(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
   });
   $("#2-2").click(function(){
@@ -201,10 +229,20 @@ $(document).ready(function(){
     var yIndex = 2;
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
+    twoInRow(newBoard.arrayBoard);
+    twoInVertical(newBoard.arrayBoard);
     winCheck(newBoard.arrayBoard);
   });
 
 });
+
+//Vertical
+
+
+
+
+
+
 
 
 //   var cell0 = $("#00").val();
