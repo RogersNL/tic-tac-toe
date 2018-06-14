@@ -35,6 +35,7 @@ function Board (arrayBoard) {
 
 
 //Functions
+//Function that determines X or O
 function toSymbol (turn) {
   if(turn%2 === 0){
     return "O";
@@ -42,6 +43,7 @@ function toSymbol (turn) {
     return "X";
   }
 }
+//Function that displays who wins
 function winMessage (){
   if(turn%2 === 0){
     $("#Player2-result").show();
@@ -49,19 +51,18 @@ function winMessage (){
     $("#Player1-result").show();
   }
 }
+//Function that determines if 2 are in a row
 function twoInRow (arrayBoard) {
   for (i = 0; i < arrayBoard.length; i++){
     newString = arrayBoard[i].join("");
     if (newString.includes(toSymbol(turn) + toSymbol(turn))){
-      alert("2 in a row");
       if (!newString.includes(toSymbol(turn + 1))){
-        alert("not blocked");
         computerXIndex = i;
-        alert(computerXIndex);
       }
     }
   }
 }
+//Functions that determine the win condition matrix
 function findYIndex (cXIndex, allRowsArray) {
   computerYIndex = allRowsArray[cXIndex].indexOf("");
 }
@@ -104,7 +105,7 @@ function twoCheck (arrayBoard) {
   }
 
 }
-
+//Function that plays a turn in the game
 function turnSequence (arrayBoard, xCoordinate, yCoordinate) {
   if (arrayBoard[xCoordinate][yCoordinate] === "" && !gameOver) {
     if (turn%2 === 0) {
@@ -126,6 +127,7 @@ function turnSequence (arrayBoard, xCoordinate, yCoordinate) {
     }
   }
 }
+//Function that checks if anyone wins
 function winCheck (arrayBoard, boolean) {
   //Horizontal
   if(arrayBoard[0][0] === toSymbol(turn) && arrayBoard[0][1] === toSymbol(turn) && arrayBoard[0][2] === toSymbol(turn)){
@@ -175,7 +177,61 @@ function winCheck (arrayBoard, boolean) {
     $(".btn").show();
   }
 }
+//Functions that determine if they can block
+function twoCheckBlock (arrayBoard) {
+  //Vertical Rows
+  var arrayOfVertical = [];
+  for (b = 0; b < arrayBoard.length; b ++) {
+    for (a = 0; a < arrayBoard[b].length; a ++) {
+      arrayOfVertical.push(arrayBoard[a][b]);
+    }
+  }
+  var verticalToRows = []
+  for (c = 0; c < arrayBoard.length; c++) {
+    verticalToRows.push(arrayOfVertical.slice(c * arrayBoard.length, (c + 1) *  arrayBoard.length));
+  }
+  //Diagonal Rows
+  var diagonalArray = [[],[]]
+  for (i = 0; i < 3; i++) {
+    diagonalArray[0].push(arrayBoard[i][i]);
+  }
+  for (j = 0; j < 3; j++) {
+    diagonalArray[1].push(arrayBoard[j][2-j]);
+  }
+  //One array for all 2 in a rows
+  var allRows = arrayBoard.concat(verticalToRows).concat(diagonalArray);
+  console.log(allRows);
+  twoInRowBlock(allRows);
 
+  if (computerXIndex >= 0){
+    findYIndex(computerXIndex, allRows);
+    getCoordinates (computerXIndex, computerYIndex);
+    alert("play at " + computerX + ", " + computerY);
+  }
+
+}
+function twoInRowBlock (arrayBoard) {
+  for (i = 0; i < arrayBoard.length; i++){
+    newString = arrayBoard[i].join("");
+    if (newString.includes(toSymbol(turn + 1) + toSymbol(turn + 1))){
+      if (!newString.includes(toSymbol(turn))){
+        computerXIndex = i;
+      }
+    }
+  }
+}
+//Function that checks for fork
+function forkCheck (arrayBoard) {
+
+  for (i = 0; i < )
+}
+//Function that determines the computer's actions
+function computerChoice (arrayBoard) {
+  //1. Win - computer has 2 in a row and finishes game
+  twoCheck (arrayBoard);
+  //2. Block - computer blocks player that has 2 in a row
+  twoCheckBlock (arrayBoard);
+}
 $(document).ready(function(){
   $(".btn").click(function(){
     turn = 0;
@@ -202,7 +258,7 @@ $(document).ready(function(){
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
     winCheck(newBoard.arrayBoard);
-    twoCheck(newBoard.arrayBoard);
+    computerChoice(newBoard.arrayBoard);
 
   });
   $("#0-1").click(function(){
@@ -211,7 +267,7 @@ $(document).ready(function(){
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
     winCheck(newBoard.arrayBoard);
-    twoCheck(newBoard.arrayBoard);
+    computerChoice(newBoard.arrayBoard);
   });
   $("#0-2").click(function(){
     var xIndex = 0;
@@ -219,7 +275,7 @@ $(document).ready(function(){
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
     winCheck(newBoard.arrayBoard);
-    twoCheck(newBoard.arrayBoard);
+    computerChoice(newBoard.arrayBoard);
   });
   $("#1-0").click(function(){
     var xIndex = 1;
@@ -227,7 +283,7 @@ $(document).ready(function(){
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
     winCheck(newBoard.arrayBoard);
-    twoCheck(newBoard.arrayBoard);
+    computerChoice(newBoard.arrayBoard);
   });
   $("#1-1").click(function(){
     var xIndex = 1;
@@ -235,7 +291,7 @@ $(document).ready(function(){
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
     winCheck(newBoard.arrayBoard);
-    twoCheck(newBoard.arrayBoard);
+    computerChoice(newBoard.arrayBoard);
   });
   $("#1-2").click(function(){
     var xIndex = 1;
@@ -243,7 +299,7 @@ $(document).ready(function(){
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
     winCheck(newBoard.arrayBoard);
-    twoCheck(newBoard.arrayBoard);
+    computerChoice(newBoard.arrayBoard);
   });
   $("#2-0").click(function(){
     var xIndex = 2;
@@ -251,7 +307,7 @@ $(document).ready(function(){
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
     winCheck(newBoard.arrayBoard);
-    twoCheck(newBoard.arrayBoard);
+    computerChoice(newBoard.arrayBoard);
   });
   $("#2-1").click(function(){
     var xIndex = 2;
@@ -259,7 +315,7 @@ $(document).ready(function(){
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
     winCheck(newBoard.arrayBoard);
-    twoCheck(newBoard.arrayBoard);
+    computerChoice(newBoard.arrayBoard);
   });
   $("#2-2").click(function(){
     var xIndex = 2;
@@ -267,6 +323,6 @@ $(document).ready(function(){
     var newSpace = new Space (xIndex, yIndex);
     turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
     winCheck(newBoard.arrayBoard);
-    twoCheck(newBoard.arrayBoard);
+    computerChoice(newBoard.arrayBoard);
   });
 });
