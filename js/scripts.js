@@ -12,6 +12,8 @@ var arrayCoordinates = [ ["00","01","02"],
                          ["02","11","20"] ];
 var computerXIndex = -1;
 var computerYIndex = -1;
+var computerX = -1;
+var computerY = -1;
 //console.log(spaceArray);
 //console.log(turn);
 
@@ -124,6 +126,17 @@ function turnSequence (arrayBoard, xCoordinate, yCoordinate) {
       $("#player1").show();
       console.log(arrayBoard);
     }
+  }
+}
+function turnSequenceComputer (arrayBoard, xCoordinate, yCoordinate) {
+  if (arrayBoard[xCoordinate][yCoordinate] === "" && !gameOver) {
+      arrayBoard[xCoordinate].splice(yCoordinate, 1, "O");
+      $("#"+ xCoordinate +"-"+ yCoordinate).append("<img src='img/O.png' alt='o'>");
+      turn++;
+      $("#player2").show();
+      $("#player1").hide();
+      computerX = -1;
+      computerY = -1;
   }
 }
 //Function that checks if anyone wins
@@ -267,11 +280,10 @@ function forkCheck (arrayBoard) {
               }
             }
           }
-
           if (forkInstance > 1) {
             compX = a;
             compY = b;
-            alert("fork at " + a + ", " + b);
+            // alert("fork at " + a + ", " + b);
           } else {
             forkInstance = 0;
           }
@@ -279,18 +291,154 @@ function forkCheck (arrayBoard) {
       }
     }
   }
+}
+function forkCheckBlock (arrayBoard) {
+  var testArray = arrayBoard.slice();
+  var forkInstance = 0;
+  var compX = 0;
+  var compY = 0;
+  //Loop to try each space
+
+  for (a = 0; a < testArray.length; a++) {
+    for (b = 0; b < testArray[a].length; b++) {
+      if (forkInstance < 2) {
+        if (testArray[a][b] === "") {
+          testArray[a].splice(b, 1, toSymbol(turn));
+
+          //Turn into large array
+          var arrayOfVertical = [];
+          for (c = 0; c < testArray.length; c ++) {
+            for (d = 0; d < testArray[c].length; d ++) {
+              arrayOfVertical.push(testArray[d][c]);
+            }
+          }
+          var verticalToRows = []
+          for (e = 0; e < testArray.length; e++) {
+            verticalToRows.push(arrayOfVertical.slice(e * testArray.length, (e + 1) *  testArray.length));
+          }
+          //Diagonal Rows
+          var diagonalArray = [[],[]]
+          for (i = 0; i < 3; i++) {
+            diagonalArray[0].push(testArray[i][i]);
+          }
+          for (j = 0; j < 3; j++) {
+            diagonalArray[1].push(testArray[j][2-j]);
+          }
 
 
+          //One array for all 2 in a rows
+          var test2Array = testArray.slice();
+          testArray[a].splice(b, 1, "");
+          var allRows1 = test2Array.concat(verticalToRows).concat(diagonalArray);
+
+          for (k = 0; k < allRows1.length; k++){
+            var newString = allRows1[k].join("");
+            if (newString.includes(toSymbol(turn) + toSymbol(turn))){
+              if (!newString.includes(toSymbol(turn + 1))){
+                forkInstance ++;
+              }
+            }
+          }
+          if (forkInstance > 1) {
+            compX = a;
+            compY = b;
+            // alert("block fork at " + a + ", " + b);
+          } else {
+            forkInstance = 0;
+          }
+        }
+      }
+    }
+  }
+}
+//Functions that play on specific cells
+function playCenter (arrayBoard) {
+  if (arrayBoard[1][1] === "") {
+    computerX = 1;
+    computerY = 1;
+  }
+}
+function playOppositeCorner (arrayBoard) {
+  if (arrayBoard[0][0] === toSymbol(turn + 1) && arrayBoard[2][2] === "") {
+    computerX = 2;
+    computerY = 2;
+  } else if (arrayBoard[2][2] === toSymbol(turn + 1) && arrayBoard[0][0] === "") {
+    computerX = 0;
+    computerY = 0;
+  } else if (arrayBoard[0][2] === toSymbol(turn + 1) && arrayBoard[2][0] === "") {
+    computerX = 2;
+    computerY = 0;
+  }
+    else if (arrayBoard[2][0] === toSymbol(turn + 1) && arrayBoard[0][2] === "") {
+    computerX = 0;
+    computerY = 2;
+  }
+}
+function playCorner (arrayBoard) {
+  if (arrayBoard[0][0] === "") {
+    computerX = 0;
+    computerY = 0;
+  } else if (arrayBoard[0][2] === "") {
+    computerX = 0;
+    computerY = 2;
+  } else if (arrayBoard[2][0] === "") {
+    computerX = 2;
+    computerY = 0;
+  } else if (arrayBoard[2][2] === "") {
+    computerX = 2;
+    computerY = 2;
+  }
+}
+function playSide (arrayBoard) {
+  if (arrayBoard[0][1] === "") {
+    computerX = 0;
+    computerY = 1;
+  } else if (arrayBoard[1][0] === "") {
+    computerX = 1;
+    computerY = 0;
+  } else if (arrayBoard[2][1] === "") {
+    computerX = 2;
+    computerY = 1;
+  } else if (arrayBoard[1][2] === "") {
+    computerX = 1;
+    computerY = 2;
+  }
 }
 //Function that determines the computer's actions
 function computerChoice (arrayBoard) {
   if (!gameOver){
-  //1. Win - computer has 2 in a row and finishes game
-  twoCheck (arrayBoard);
-  //2. Block - computer blocks player that has 2 in a row
-  twoCheckBlock (arrayBoard);
-  //3. Fork - computer plays where it can create a Fork
-  forkCheck (arrayBoard);
+    //1. Win - computer has 2 in a row and finishes game
+    if (computerX < 0) {
+      twoCheck (arrayBoard);
+    }
+    //2. Block - computer blocks player that has 2 in a row
+    if (computerX < 0) {
+      twoCheckBlock (arrayBoard);
+    }
+    //3. Fork - computer plays where it can create a Fork
+    if (computerX < 0) {
+      forkCheck (arrayBoard);
+    }
+    //4. Fork Block - computer blocks a potential fork from opponent
+    if (computerX < 0) {
+      forkCheckBlock (arrayBoard);
+    }
+    //5. Middle - if middle is open, play on it
+    if (computerX < 0) {
+      playCenter (arrayBoard);
+    }
+    //6. Opposite Corner - play in an opposite corner of opponent
+    if (computerX < 0) {
+      playOppositeCorner (arrayBoard);
+    }
+    //7. Play in any corner - play in a Corner
+    if (computerX < 0) {
+      playCorner (arrayBoard);
+    }
+    //8. Play in any side - play in a side
+    if (computerX < 0) {
+      playSide (arrayBoard);
+    }
   }
 }
 $(document).ready(function(){
@@ -308,82 +456,70 @@ $(document).ready(function(){
   });
   var newGame = new Game (gameOver);
   var newBoard = new Board (spaceArray);
-  var computerX = 0;
-  var computerY = 0;
+
 
 
   $("#0-0").click(function(){
-    var xIndex = 0;
-    var yIndex = 0;
-
-    var newSpace = new Space (xIndex, yIndex);
-    turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
+    turnSequence(newBoard.arrayBoard, 0, 0);
     winCheck(newBoard.arrayBoard);
     computerChoice(newBoard.arrayBoard);
-
+    turnSequenceComputer (newBoard.arrayBoard, computerX, computerY);
+    winCheck(newBoard.arrayBoard);
   });
   $("#0-1").click(function(){
-    var xIndex = 0;
-    var yIndex = 1;
-    var newSpace = new Space (xIndex, yIndex);
-    turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
+    turnSequence(newBoard.arrayBoard, 0, 1);
     winCheck(newBoard.arrayBoard);
     computerChoice(newBoard.arrayBoard);
+    turnSequenceComputer (newBoard.arrayBoard, computerX, computerY);
+    winCheck(newBoard.arrayBoard);
   });
   $("#0-2").click(function(){
-    var xIndex = 0;
-    var yIndex = 2;
-    var newSpace = new Space (xIndex, yIndex);
-    turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
+    turnSequence(newBoard.arrayBoard, 0, 2);
     winCheck(newBoard.arrayBoard);
     computerChoice(newBoard.arrayBoard);
+    turnSequenceComputer (newBoard.arrayBoard, computerX, computerY);
+    winCheck(newBoard.arrayBoard);
   });
   $("#1-0").click(function(){
-    var xIndex = 1;
-    var yIndex = 0;
-    var newSpace = new Space (xIndex, yIndex);
-    turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
+    turnSequence(newBoard.arrayBoard, 1, 0);
     winCheck(newBoard.arrayBoard);
     computerChoice(newBoard.arrayBoard);
+    turnSequenceComputer (newBoard.arrayBoard, computerX, computerY);
+    winCheck(newBoard.arrayBoard);
   });
   $("#1-1").click(function(){
-    var xIndex = 1;
-    var yIndex = 1;
-    var newSpace = new Space (xIndex, yIndex);
-    turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
+    turnSequence(newBoard.arrayBoard, 1, 1);
     winCheck(newBoard.arrayBoard);
     computerChoice(newBoard.arrayBoard);
+    turnSequenceComputer (newBoard.arrayBoard, computerX, computerY);
+    winCheck(newBoard.arrayBoard);
   });
   $("#1-2").click(function(){
-    var xIndex = 1;
-    var yIndex = 2;
-    var newSpace = new Space (xIndex, yIndex);
-    turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
+    turnSequence(newBoard.arrayBoard, 1, 2);
     winCheck(newBoard.arrayBoard);
     computerChoice(newBoard.arrayBoard);
+    turnSequenceComputer (newBoard.arrayBoard, computerX, computerY);
+    winCheck(newBoard.arrayBoard);
   });
   $("#2-0").click(function(){
-    var xIndex = 2;
-    var yIndex = 0;
-    var newSpace = new Space (xIndex, yIndex);
-    turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
+    turnSequence(newBoard.arrayBoard, 2, 0);
     winCheck(newBoard.arrayBoard);
     computerChoice(newBoard.arrayBoard);
+    turnSequenceComputer (newBoard.arrayBoard, computerX, computerY);
+    winCheck(newBoard.arrayBoard);
   });
   $("#2-1").click(function(){
-    var xIndex = 2;
-    var yIndex = 1;
-    var newSpace = new Space (xIndex, yIndex);
-    turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
+    turnSequence(newBoard.arrayBoard, 2, 1);
     winCheck(newBoard.arrayBoard);
     computerChoice(newBoard.arrayBoard);
+    turnSequenceComputer (newBoard.arrayBoard, computerX, computerY);
+    winCheck(newBoard.arrayBoard);
   });
   $("#2-2").click(function(){
-    var xIndex = 2;
-    var yIndex = 2;
-    var newSpace = new Space (xIndex, yIndex);
-    turnSequence(newBoard.arrayBoard, newSpace.xCoordinate, newSpace.yCoordinate);
+    turnSequence(newBoard.arrayBoard, 2, 2);
     winCheck(newBoard.arrayBoard);
     computerChoice(newBoard.arrayBoard);
+    turnSequenceComputer (newBoard.arrayBoard, computerX, computerY);
+    winCheck(newBoard.arrayBoard);
   });
 });
