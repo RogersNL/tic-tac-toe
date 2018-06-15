@@ -12,8 +12,8 @@ var arrayCoordinates = [ ["00","01","02"],
                          ["02","11","20"] ];
 var computerXIndex = -1;
 var computerYIndex = -1;
-console.log(spaceArray);
-console.log(turn);
+//console.log(spaceArray);
+//console.log(turn);
 
 //Constructors
 function Player(name) {
@@ -95,10 +95,11 @@ function twoCheck (arrayBoard) {
   }
   //One array for all 2 in a rows
   var allRows = arrayBoard.concat(verticalToRows).concat(diagonalArray);
-  console.log(allRows);
+  //console.log(allRows);
   twoInRow(allRows);
 
   if (computerXIndex >= 0){
+    //console.log(computerXIndex);
     findYIndex(computerXIndex, allRows);
     getCoordinates (computerXIndex, computerYIndex);
     //alert("play at " + computerX + ", " + computerY);
@@ -115,7 +116,6 @@ function turnSequence (arrayBoard, xCoordinate, yCoordinate) {
       $("#player2").show();
       $("#player1").hide();
       console.log(arrayBoard);
-      console.log(turn);
     } else {
       arrayBoard[xCoordinate].splice(yCoordinate, 1, "O");
       $("#"+ xCoordinate +"-"+ yCoordinate).append("<img src='img/O.png' alt='o'>");
@@ -123,7 +123,6 @@ function turnSequence (arrayBoard, xCoordinate, yCoordinate) {
       $("#player2").hide();
       $("#player1").show();
       console.log(arrayBoard);
-      console.log(turn);
     }
   }
 }
@@ -222,27 +221,28 @@ function twoInRowBlock (arrayBoard) {
 }
 //Function that checks for fork
 function forkCheck (arrayBoard) {
-  var testArray = arrayBoard;
+  var testArray = arrayBoard.slice();
   var forkInstance = 0;
   var compX = 0;
   var compY = 0;
   //Loop to try each space
-  if (forkInstance < 1) {
-    for (a = 0; a < testArray.length; a++) {
-      for (b = 0; b < testArray[a]; b++) {
-        testArray = arrayBoard;
+
+  for (a = 0; a < testArray.length; a++) {
+    for (b = 0; b < testArray[a].length; b++) {
+      if (forkInstance < 2) {
         if (testArray[a][b] === "") {
-          testArray[a].splice(b, 1, toSymbol(turn));
+          testArray[a].splice(b, 1, toSymbol(turn + 1));
+
           //Turn into large array
           var arrayOfVertical = [];
-          for (b = 0; b < testArray.length; b ++) {
-            for (a = 0; a < testArray[b].length; a ++) {
-              arrayOfVertical.push(testArray[a][b]);
+          for (c = 0; c < testArray.length; c ++) {
+            for (d = 0; d < testArray[c].length; d ++) {
+              arrayOfVertical.push(testArray[d][c]);
             }
           }
           var verticalToRows = []
-          for (c = 0; c < testArray.length; c++) {
-            verticalToRows.push(arrayOfVertical.slice(c * testArray.length, (c + 1) *  testArray.length));
+          for (e = 0; e < testArray.length; e++) {
+            verticalToRows.push(arrayOfVertical.slice(e * testArray.length, (e + 1) *  testArray.length));
           }
           //Diagonal Rows
           var diagonalArray = [[],[]]
@@ -252,20 +252,28 @@ function forkCheck (arrayBoard) {
           for (j = 0; j < 3; j++) {
             diagonalArray[1].push(testArray[j][2-j]);
           }
-          //One array for all 2 in a rows
-          var allRows = testArray.concat(verticalToRows).concat(diagonalArray);
 
-          for (i = 0; i < allRows.length; i++){
-            var newString = allRows[i].join("");
-            if (newString.includes(toSymbol(turn) + toSymbol(turn))){
-              if (!newString.includes(toSymbol(turn + 1))){
+
+          //One array for all 2 in a rows
+          var test2Array = testArray.slice();
+          testArray[a].splice(b, 1, "");
+          var allRows1 = test2Array.concat(verticalToRows).concat(diagonalArray);
+
+          for (k = 0; k < allRows1.length; k++){
+            var newString = allRows1[k].join("");
+            if (newString.includes(toSymbol(turn + 1) + toSymbol(turn + 1))){
+              if (!newString.includes(toSymbol(turn))){
                 forkInstance ++;
               }
             }
           }
+
           if (forkInstance > 1) {
             compX = a;
             compY = b;
+            alert("fork at " + a + ", " + b);
+          } else {
+            forkInstance = 0;
           }
         }
       }
@@ -276,12 +284,14 @@ function forkCheck (arrayBoard) {
 }
 //Function that determines the computer's actions
 function computerChoice (arrayBoard) {
+  if (!gameOver){
   //1. Win - computer has 2 in a row and finishes game
   twoCheck (arrayBoard);
   //2. Block - computer blocks player that has 2 in a row
   twoCheckBlock (arrayBoard);
   //3. Fork - computer plays where it can create a Fork
   forkCheck (arrayBoard);
+  }
 }
 $(document).ready(function(){
   $(".btn").click(function(){
