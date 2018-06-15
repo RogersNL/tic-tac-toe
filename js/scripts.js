@@ -57,8 +57,8 @@ function winMessage (){
 function twoInRow (arrayBoard) {
   for (i = 0; i < arrayBoard.length; i++){
     newString = arrayBoard[i].join("");
-    if (newString.includes(toSymbol(turn) + toSymbol(turn))){
-      if (!newString.includes(toSymbol(turn + 1))){
+    if (newString.includes(toSymbol(turn + 1) + toSymbol(turn + 1))){
+      if (!newString.includes(toSymbol(turn))){
         computerXIndex = i;
       }
     }
@@ -225,8 +225,8 @@ function twoCheckBlock (arrayBoard) {
 function twoInRowBlock (arrayBoard) {
   for (i = 0; i < arrayBoard.length; i++){
     newString = arrayBoard[i].join("");
-    if (newString.includes(toSymbol(turn + 1) + toSymbol(turn + 1))){
-      if (!newString.includes(toSymbol(turn))){
+    if (newString.includes(toSymbol(turn) + toSymbol(turn))){
+      if (!newString.includes(toSymbol(turn + 1))){
         computerXIndex = i;
       }
     }
