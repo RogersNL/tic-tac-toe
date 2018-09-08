@@ -1,13 +1,17 @@
 # _Tic-Tac-Toe_
 
-#### _A Website that lets you play Tic-Tac-Toe, June 6, 2018_
+#### _A Website that lets you play Tic-Tac-Toe, June 14, 2018_
 
 #### By _**Nick Rogers and Brian Palowski**_
 
 ## Description
 
-_This website was created to play Tic-Tac-Toe.
-Specs:
+_This website was created to play Tic-Tac-Toe._
+
+The goal of this project was to create a smart Tic-Tac-Toe bot that made all the correct decisions based off of the strategy section in the Wikipedia page for Tic-Tac-Toe: https://en.wikipedia.org/wiki/Tic-tac-toe.  There is lots of room for refactoring since much of the code is unnecessarily repeated.   
+
+## Specs
+
 1. Create the board with 2 dimensional arrays.
   Example: array = [ [3],[3],[3] ]
 
@@ -19,19 +23,19 @@ Specs:
 
 4. Alternate between X and O also between player 1 and player 2.
   Example: When cell is clicked either X or O will change.
-  
-5.Create branch statements to determine who will win.
+
+5. Create branch statements to determine who will win.
   Example: When three symbols in a row display winner and ends game.
 
-_
 
 ## Setup/Installation Requirements
 
-* _Double click the icon in your folder_
+* _Clone Repository_
+* _Open index.html_
 
 ## Known Bugs
 
-_Doesn't properly add "way" to end of vowel words.  Doesn't properly translate "qu" or words starting with "y"._
+_Computer doesn't always play to win._
 
 ## Support and contact details
 
